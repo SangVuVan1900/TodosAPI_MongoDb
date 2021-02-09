@@ -43,46 +43,44 @@ namespace TodoAPI_1.Controllers
             }
         }
 
-        [HttpPost("{id:length(24)}")]  
+        [HttpPost]
         public ActionResult<Todo> CreateTodo(Todo todo)
         {
-            try
-            {
-                _todoService.Create(todo);
-                return Ok("The newly created todo");
-            }
-            catch
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid data");
             }
+
+            _todoService.Create(todo);
+            return Ok("The newly created todo");
         }
 
         [HttpPut("{id:length(24)}")]
-        public IActionResult UpdateTodo(string id, Todo todoIn) 
+        public IActionResult UpdateTodo(string id, Todo todoIn)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data"); 
+            }
+
+            var todo = _todoService.Get(id); 
+            if (todo != null)
+            {
+                _todoService.Update(id, todoIn); 
+            }
+            else
+            {
+                return NotFound("Unknown todo id");
+            }
+
+            return Ok("Successfully updated the todo");
+        } 
+
+        [HttpDelete]
+        public IActionResult DeleteTodo(string id) 
+        {
+            Todo todo;
             try
-            {
-                var todo = _todoService.Get(id);
-
-                if (todo == null)
-                {
-                    return NotFound("Unknown todo id");
-                }
-
-                _todoService.Update(id, todoIn);
-                return Ok("Successfully updated the todo");
-            }
-            catch
-            {
-                return BadRequest("Invalid data");
-            }
-        }
-
-        [HttpDelete] 
-        public IActionResult DeleteTodo(string id)
-        {
-            Todo todo; 
-            try 
             {
                 todo = _todoService.Get(id);
 
@@ -90,13 +88,13 @@ namespace TodoAPI_1.Controllers
                 {
                     return NotFound("Unknown todo id");
                 }
-            }  
+            }
             catch
             {
                 return BadRequest("Invalid data");
             }
             _todoService.Remove(todo);
-            return Ok("Successfully deleted the todo"); 
+            return Ok("Successfully deleted the todo");
         }
 
         [HttpPatch]
