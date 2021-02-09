@@ -19,7 +19,7 @@ namespace TodoAPI_1.Controllers
         {
             _todoService = todoService;
         }
-        // up
+        // update 1
         [HttpGet]
         public ActionResult<List<Todo>> GetTodos() =>
             _todoService.Get();
