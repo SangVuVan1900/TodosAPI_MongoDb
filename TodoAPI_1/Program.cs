@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TodoAPI_1
 {
-    public class Program
+    public class Program 
     {
         public static void Main(string[] args)
         {
@@ -19,7 +19,7 @@ namespace TodoAPI_1
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
-                {
+                {    
                     webBuilder.UseStartup<Startup>();
                 });
     }

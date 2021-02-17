@@ -23,6 +23,16 @@ namespace TodoAPI_1.Models
         [BsonRequired]
         public bool Done { get; set; } = false;
 
+        public Todo()
+        {
+        }
+
+        public Todo(string Id, string Title)
+        {
+            this.Id = Id;
+            this.Title = Title;
+        }
+
 
     }
 }

@@ -19,8 +19,9 @@ namespace TodoAPI_1.Services
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
         }
 
+         
         public List<Todo> Get() =>
-            _todos.Find(todo => true).ToList();
+            _todos.Find(_ => true).ToList();
 
         public Todo Get(string id) =>
             _todos.Find(todo => todo.Id == id).FirstOrDefault();
@@ -32,16 +33,16 @@ namespace TodoAPI_1.Services
             return todo;
         }
 
-        public void Update(string id, Todo todoIn)
+        public void Update(string id, string title)
         {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
-            todoIn.Done = todo.Done; 
+            Todo todoIn = new Todo(id, title);
             _todos.ReplaceOne(todo => todo.Id == id, todoIn);
         }
 
         public void Remove(Todo _todo) =>
             _todos.DeleteOne(todo => todo.Id == _todo.Id);
-         
+
         public void Remove(string id) =>
             _todos.DeleteOne(todo => todo.Id == id);
 

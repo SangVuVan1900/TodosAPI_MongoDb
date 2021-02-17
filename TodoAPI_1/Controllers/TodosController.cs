@@ -19,84 +19,157 @@ namespace TodoAPI_1.Controllers
         {
             _todoService = todoService;
         }
-        // update 1
+
         [HttpGet]
         public ActionResult<List<Todo>> GetTodos() =>
             _todoService.Get();
 
-        [HttpGet("{id:length(24)}", Name = "GetTodo")]
-        public ActionResult<Todo> GetTodo(string id)
-        {
-            try
-            {
-                var todo = _todoService.Get(id);
-                if (todo != null)
-                {
-                    return todo;
-                }
 
-                return NotFound($"Todo with id: {id} was not found, please try again!");
-            }
-            catch
-            {
-                return BadRequest("Invalid data");
-            }
-        }
-
+        //  post:
+        //operationId: createTodo
+        //parameters:
+        //  - name: todo
+        //    in: body
+        //    required: true
+        //    schema:
+        //      $ref: '#/definitions/Todo'
+        //responses:
+        //  200:
+        //    description: The newly created todo
+        //    schema:
+        //      $ref: '#/definitions/Todo' 
+        //  400:
+        //    description: Invalid data
         [HttpPost]
-        public ActionResult<Todo> CreateTodo(Todo todo)
+        public ActionResult<Todo> CreateTodo([FromBody] string todo)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || string.IsNullOrEmpty(todo))
             {
                 return BadRequest("Invalid data");
             }
+            Todo todoRecord = new Todo();
+            todoRecord.Title = todo;
 
-            _todoService.Create(todo);
+            _todoService.Create(todoRecord);
             return Ok("The newly created todo");
         }
 
-        [HttpPut("{id:length(24)}")]
-        public IActionResult UpdateTodo(string id, Todo todoIn)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Invalid data"); 
-            }
 
-            var todo = _todoService.Get(id); 
-            if (todo != null)
+        //todos/{todoId}
+        //parameters: 
+        //  - name: todoId
+        //    in: path
+        //    type: string
+        //    required: true
+        //get:
+        //  operationId: getTodo
+        //  responses:
+        //    200:
+        //      description: The todo with the given todo id
+        //      schema:
+        //        $ref: '#/definitions/Todo'
+        //    404:
+        //      description: Unknown todo id
+
+        [HttpGet("{todoId:length(0, 24)}", Name = "GetTodo")]
+        public ActionResult<Todo> GetTodo([FromUri] string todoId)
+        {
+            try
             {
-                _todoService.Update(id, todoIn); 
+                var todo = _todoService.Get(todoId);
+                if (todo == null)
+                {
+                    return NotFound("Unknown todo id");
+                }
+
+                return todo;
             }
-            else
+            catch
             {
                 return NotFound("Unknown todo id");
             }
+        }
 
-            return Ok("Successfully updated the todo");
-        } 
+        //put:
+        //  operationId: updateTodo
+        //  parameters:
+        //    - name: update
+        //      in: body
+        //      required: true
+        //      schema:
+        //        $ref: '#/definitions/Todo'
+        //  responses:
+        //    200:
+        //      description: Successfully updated the todo
+        //    400:
+        //      description: Invalid data
+        //    404:
+        //      description: Unknown todo id
+        [HttpPut("{todoId:length(0, 24)}")]
+        public IActionResult UpdateTodo(string todoId, [FromBody] string update)
+        {
+            if (!ModelState.IsValid || string.IsNullOrEmpty(update))
+            {
+                return BadRequest("Invalid data");
+            }
+            try
+            {
+                var todo = _todoService.Get(todoId);
+                if (todo == null)
+                {
+                    return NotFound("Unknown todo id");
+                }
 
+                _todoService.Update(todoId, update);
+                return Ok("Successfully updated the todo");
+            }
+            catch
+            {
+                return NotFound("Unknown todo id");
+            }
+        }
+
+
+        //delete:
+        //  operationId: deleteTodo
+        //  responses:
+        //    200:
+        //      description: Successfully deleted the todo
+        //    404:
+        //      description: Unknown todo id
         [HttpDelete]
-        public IActionResult DeleteTodo(string id) 
+        public IActionResult DeleteTodo([FromUri] string id)
         {
             Todo todo;
             try
             {
                 todo = _todoService.Get(id);
-
                 if (todo == null)
                 {
                     return NotFound("Unknown todo id");
                 }
+                _todoService.Remove(todo);
+                return Ok("Successfully deleted the todo");
             }
             catch
             {
-                return BadRequest("Invalid data");
+                return NotFound("Unknown todo id");
             }
-            _todoService.Remove(todo);
-            return Ok("Successfully deleted the todo");
         }
 
+        //todos/{todoId}/setdone:
+        //parameters:
+        //  - name: todoId 
+        //    in: path
+        //    type: string
+        //    required: true
+        //put:
+        //  operationId: setDone
+        //  responses:
+        //    200:
+        //      description: Successfully set the todo as done
+        //    404:
+        //      description: Unknown todo id
         [HttpPatch]
         public IActionResult SetDone(string id)
         {
@@ -108,14 +181,13 @@ namespace TodoAPI_1.Controllers
                 {
                     return NotFound("Unknown todo id");
                 }
+                _todoService.SetDone(id);
+                return Ok("Successfully set the todo as done");
             }
             catch
             {
-                return BadRequest("Invalid data");
+                return NotFound("Unknown todo id");
             }
-
-            _todoService.SetDone(id);
-            return Ok("Successfully set the todo as done");
         }
     }
 }
