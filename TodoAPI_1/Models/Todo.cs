@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -26,11 +26,12 @@ namespace TodoAPI_1.Models
         public Todo()
         {
         }
-
-        public Todo(string Id, string Title)
+         
+        public Todo(string Id, string Title, bool Done)
         {
             this.Id = Id;
             this.Title = Title;
+            this.Done = Done;
         }
 
 
