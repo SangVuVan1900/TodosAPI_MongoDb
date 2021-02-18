@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +11,20 @@ namespace TodoAPI_1.Services
     {
         private readonly IMongoCollection<Todo> _todos;
 
-        public TodoService(ITodoApiDatabaseSettings settings)
+        public TodoService(ITodoApiDatabaseSettings settings) 
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
-        }
+        }      
 
-         
+             
         public List<Todo> Get() =>
-            _todos.Find(_ => true).ToList();
+            _todos.Find(todo => true).ToList(); 
 
         public Todo Get(string id) =>
-            _todos.Find(todo => todo.Id == id).FirstOrDefault();
+            _todos.Find(todo => todo.Id == id).FirstOrDefault(); 
 
         public Todo Create(Todo todo)
         {
@@ -36,8 +36,8 @@ namespace TodoAPI_1.Services
         public void Update(string id, string title)
         {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
-            Todo todoIn = new Todo(id, title);
-            _todos.ReplaceOne(todo => todo.Id == id, todoIn);
+            Todo todoIn = new Todo(id, title, todo.Done);
+            _todos.ReplaceOne(todo => todo.Id == id, todoIn); 
         }
 
         public void Remove(Todo _todo) =>
