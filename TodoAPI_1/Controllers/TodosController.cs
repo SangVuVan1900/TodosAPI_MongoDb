@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,11 @@ using TodoAPI_1.Services;
 
 namespace TodoAPI_1.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/[controller]")] 
+    [ApiController] 
     public class TodosController : ControllerBase
     {
         private readonly TodoService _todoService;
-
         public TodosController(TodoService todoService)
         {
             _todoService = todoService;
@@ -24,8 +24,6 @@ namespace TodoAPI_1.Controllers
         public ActionResult<List<Todo>> GetTodos() =>
             _todoService.Get();
 
-
-      
         [HttpPost]
         public ActionResult<Todo> CreateTodo([FromBody] string todo)
         {
@@ -37,11 +35,8 @@ namespace TodoAPI_1.Controllers
             todoRecord.Title = todo;
 
             _todoService.Create(todoRecord);
-            return Ok("The newly created todo");
-        }
-
-
-        
+            return todoRecord;
+        }  
 
         [HttpGet("{todoId:length(0, 24)}", Name = "GetTodo")]
         public ActionResult<Todo> GetTodo(string todoId)
@@ -53,7 +48,6 @@ namespace TodoAPI_1.Controllers
                 {
                     return NotFound("Unknown todo id");
                 }
-
                 return todo;
             }
             catch
@@ -61,33 +55,32 @@ namespace TodoAPI_1.Controllers
                 return NotFound("Unknown todo id");
             }
         }
-
-        [HttpPut("{todoId:length(0, 24)}")]
-        public IActionResult UpdateTodo(string todoId, [FromBody] string update)
+ 
+        [HttpPut("{todoId:length(0, 24)}")] 
+        public ActionResult<Todo> UpdateTodo(string todoId, [FromBody] string update)
         {
-            if (!ModelState.IsValid || string.IsNullOrEmpty(update))
+            if (!ModelState.IsValid || string.IsNullOrEmpty(update)) 
             {
                 return BadRequest("Invalid data");
-            }
-            try
+            } 
+            try  
             {
-                var todo = _todoService.Get(todoId);
-                if (todo == null)
+                var todo = _todoService.Get(todoId); 
+                if (todo == null) 
                 {
                     return NotFound("Unknown todo id");
-                }
+                }  
 
-                _todoService.Update(todoId, update);
-                return Ok("Successfully updated the todo");
-            }
+                _todoService.Update(todoId, update); 
+                Todo todoUpdate = new Todo(todoId, update, todo.Done); 
+                return todoUpdate;      
+            } 
             catch
             {
                 return NotFound("Unknown todo id");
             }
         }
 
-
-     
         [HttpDelete]
         public IActionResult DeleteTodo(string id)
         {
@@ -103,12 +96,11 @@ namespace TodoAPI_1.Controllers
                 return Ok("Successfully deleted the todo");
             }
             catch
-            {
+            { 
                 return NotFound("Unknown todo id");
             }
         }
 
-       
         [HttpPatch]
         public IActionResult SetDone(string id)
         {
