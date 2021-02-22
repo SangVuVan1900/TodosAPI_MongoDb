@@ -15,7 +15,7 @@ namespace TodoAPI_1.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [Required]
+        [BsonRequired] 
         [MinLength(1)]
         [BsonElement("Title")]
         public string Title { get; set; }
@@ -23,16 +23,21 @@ namespace TodoAPI_1.Models
         [BsonRequired]
         public bool Done { get; set; } = false;
 
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+         
+        public DateTime? UpdatedDate { get; set; } = null; 
+
         public Todo()
         {
         }
-
-        public Todo(string Id, string Title)
+         
+        public Todo(string Id, string Title, bool Done, DateTime CreatedDate, DateTime UpdatedDate)
         {
-            this.Id = Id;
+            this.Id = Id; 
             this.Title = Title;
-        }
-
-
+            this.Done = Done; 
+            this.CreatedDate = CreatedDate;
+            this.UpdatedDate = UpdatedDate;
+        } 
     }
 }
