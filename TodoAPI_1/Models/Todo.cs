@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -31,13 +31,24 @@ namespace TodoAPI_1.Models
         {
         }
          
+<<<<<<< HEAD
         public Todo(string Id, string Title, bool Done, DateTime CreatedDate, DateTime UpdatedDate)
+=======
+        public Todo(string Id, string Title, bool Done)
+>>>>>>> 114587641e784424d13916f741f8b8e7d40d1a70
         {
             this.Id = Id; 
             this.Title = Title;
+<<<<<<< HEAD
             this.Done = Done; 
             this.CreatedDate = CreatedDate;
             this.UpdatedDate = UpdatedDate;
         } 
+=======
+            this.Done = Done;
+        }
+
+
+>>>>>>> 114587641e784424d13916f741f8b8e7d40d1a70
     }
 }
