@@ -1,4 +1,4 @@
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,25 +11,19 @@ namespace TodoAPI_1.Services
     {
         private readonly IMongoCollection<Todo> _todos;
 
-        public TodoService(ITodoApiDatabaseSettings settings) 
+        public TodoService(ITodoApiDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
-        }      
+        }
 
-<<<<<<< HEAD
         public List<Todo> Get() =>
             _todos.Find(t => t.Title.Contains("")).ToList();
-=======
-             
-        public List<Todo> Get() =>
-            _todos.Find(t => t.Title.Contains("")).ToList(); 
->>>>>>> 114587641e784424d13916f741f8b8e7d40d1a70
 
         public Todo Get(string id) =>
-            _todos.Find(todo => todo.Id == id).FirstOrDefault(); 
+            _todos.Find(todo => todo.Id == id).FirstOrDefault();
 
         public Todo Create(Todo todo)
         {
@@ -40,13 +34,8 @@ namespace TodoAPI_1.Services
         public void Update(string id, string title)
         {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
-<<<<<<< HEAD
             Todo todoIn = new Todo(id, title, todo.Done, todo.CreatedDate, DateTime.Now);
             _todos.ReplaceOne(todo => todo.Id == id, todoIn);
-=======
-            Todo todoIn = new Todo(id, title, todo.Done);
-            _todos.ReplaceOne(todo => todo.Id == id, todoIn); 
->>>>>>> 114587641e784424d13916f741f8b8e7d40d1a70
         }
 
         public void Remove(Todo _todo) =>
