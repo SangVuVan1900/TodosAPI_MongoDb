@@ -21,7 +21,7 @@ namespace TodoAPI_1.Services
 
              
         public List<Todo> Get() =>
-            _todos.Find(todo => true).ToList(); 
+            _todos.Find(t => t.Title.Contains("")).ToList(); 
 
         public Todo Get(string id) =>
             _todos.Find(todo => todo.Id == id).FirstOrDefault(); 
