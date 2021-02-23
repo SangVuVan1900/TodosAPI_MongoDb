@@ -18,7 +18,7 @@ namespace TodoAPI_1.Services
 
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
         }
-
+         
         public List<Todo> Get() =>
             _todos.Find(t => t.Title.Contains("")).ToList();
 
@@ -26,13 +26,13 @@ namespace TodoAPI_1.Services
             _todos.Find(todo => todo.Id == id).FirstOrDefault();
 
         public Todo Create(Todo todo)
-        { 
-            _todos.InsertOne(todo); 
+        {
+            _todos.InsertOne(todo);
             return todo;
         }
 
         public void Update(string id, string title)
-        { 
+        {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
             Todo todoIn = new Todo(id, title, todo.Done, todo.CreatedDate, DateTime.Now.AddHours(7));
             _todos.ReplaceOne(todo => todo.Id == id, todoIn);
@@ -51,24 +51,21 @@ namespace TodoAPI_1.Services
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
 
-        //Làm thêm cho anh filter nữa, theo status, theo name, có paginate 
-        //Sort 
-        //Tiêu chí sort: 
-        //name, created date, updated date 
-
-        public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize)
+        int pageSize = 2;
+        public List<Todo> Searching(bool done, string title, int page)
         {
             List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
-
-            if (string.IsNullOrEmpty(title))
-            {
+            if (string.IsNullOrEmpty(title)) 
+            { 
                 title = ""; 
             } 
-            TodoPagination todoPagination = new TodoPagination(PageNumber, PageSize);  
-            return todos.FindAll(t => t.Done == done && t.Title.Contains(title))
-                .Skip((todoPagination.PageNumber - 1) * todoPagination.PageSize)
-                .Take(todoPagination.PageSize)
-                .ToList();
+
+            var pages = todos
+                .FindAll(t => t.Done == done && t.Title.Contains(title))
+                .Skip(page * pageSize)
+                .Take(pageSize);
+
+            return pages.ToList();
         }
 
         public List<Todo> Sorting(bool isAscending)
@@ -82,7 +79,7 @@ namespace TodoAPI_1.Services
                 .ThenBy(t => t.UpdatedDate)
                 .ToList();
                 return todosSorting;
-            } 
+            }
             else
             {
                 var todosSorting = todos.OrderByDescending(t => t.Title)
@@ -92,5 +89,20 @@ namespace TodoAPI_1.Services
                 return todosSorting;
             }
         }
+        //public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize)
+        //{
+        //    List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
+
+        //    if (string.IsNullOrEmpty(title))
+        //    {
+        //        title = "";
+        //    }
+
+        //    TodoPagination todoPagination = new TodoPagination(PageNumber, PageSize);
+        //    return todos.FindAll(t => t.Done == done && t.Title.Contains(title))
+        //        .Skip((todoPagination.PageNumber - 1) * todoPagination.PageSize)
+        //        .Take(todoPagination.PageSize)
+        //        .ToList();
+        //}
     }
 }

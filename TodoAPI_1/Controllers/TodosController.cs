@@ -31,7 +31,7 @@ namespace TodoAPI_1.Controllers
         public ActionResult<List<Todo>> GetTodos() =>
             _todoService.Get();
 
-        [HttpPost] 
+        [HttpPost]  
         public ActionResult<Todo> CreateTodo([FromBody] string todo)
         {
             if (!ModelState.IsValid || string.IsNullOrEmpty(todo))
@@ -77,7 +77,7 @@ namespace TodoAPI_1.Controllers
             {
                 return BadRequest("Invalid data");
             }
-            try
+            try 
             {
                 var todo = _todoService.Get(todoId);
                 if (todo == null)
@@ -136,11 +136,11 @@ namespace TodoAPI_1.Controllers
         }
 
         [HttpGet("SearchTodos")]
-        public ActionResult<List<Todo>> SearchTodos(bool done, string title, int pageNumber, int pageSize)
+        public ActionResult<List<Todo>> SearchTodos(bool done, string title, int page)
         {
-            try
+            try 
             {
-                return _todoService.Searching(done, title, pageNumber, pageSize);
+                return _todoService.Searching(done, title, page);
             }
             catch
             {
