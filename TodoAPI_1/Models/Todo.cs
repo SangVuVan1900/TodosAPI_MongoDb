@@ -23,8 +23,8 @@ namespace TodoAPI_1.Models
         [BsonRequired]
         public bool Done { get; set; } = false;
 
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-         
+        public DateTime CreatedDate { get; set; } = DateTime.Now.AddHours(7);
+          
         public DateTime? UpdatedDate { get; set; } = null; 
 
         public Todo()

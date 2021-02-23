@@ -26,15 +26,15 @@ namespace TodoAPI_1.Services
             _todos.Find(todo => todo.Id == id).FirstOrDefault();
 
         public Todo Create(Todo todo)
-        {
-            _todos.InsertOne(todo);
+        { 
+            _todos.InsertOne(todo); 
             return todo;
         }
 
         public void Update(string id, string title)
-        {
+        { 
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
-            Todo todoIn = new Todo(id, title, todo.Done, todo.CreatedDate, DateTime.Now);
+            Todo todoIn = new Todo(id, title, todo.Done, todo.CreatedDate, DateTime.Now.AddHours(7));
             _todos.ReplaceOne(todo => todo.Id == id, todoIn);
         }
 
@@ -52,34 +52,45 @@ namespace TodoAPI_1.Services
         }
 
         //Làm thêm cho anh filter nữa, theo status, theo name, có paginate 
-        //Sort
+        //Sort 
         //Tiêu chí sort: 
         //name, created date, updated date 
 
-        public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize) 
+        public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize)
         {
             List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
 
             if (string.IsNullOrEmpty(title))
             {
-                title = "";
-            }
-            TodoPagination todoPagination = new TodoPagination(PageNumber, PageSize);
+                title = ""; 
+            } 
+            TodoPagination todoPagination = new TodoPagination(PageNumber, PageSize);  
             return todos.FindAll(t => t.Done == done && t.Title.Contains(title))
                 .Skip((todoPagination.PageNumber - 1) * todoPagination.PageSize)
-                .Take(todoPagination.PageSize) 
-                .ToList(); 
-        } 
+                .Take(todoPagination.PageSize)
+                .ToList();
+        }
 
-        public List<Todo> Sorting()
+        public List<Todo> Sorting(bool isAscending)
         {
             List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
 
-            var todosSorting = todos.OrderBy(t => t.Title)
+            if (isAscending)
+            {
+                var todosSorting = todos.OrderBy(t => t.Title)
                 .ThenBy(t => t.CreatedDate)
                 .ThenBy(t => t.UpdatedDate)
                 .ToList();
-            return todosSorting;
+                return todosSorting;
+            } 
+            else
+            {
+                var todosSorting = todos.OrderByDescending(t => t.Title)
+                .ThenByDescending(t => t.CreatedDate)
+                .ThenByDescending(t => t.UpdatedDate)
+                .ToList();
+                return todosSorting;
+            }
         }
     }
 }

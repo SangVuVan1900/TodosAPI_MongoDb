@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using TodoAPI_1.Models;
@@ -17,17 +18,20 @@ namespace TodoAPI_1.Controllers
         //return BadRequest(modelState);
 
         private readonly TodoService _todoService;
+        private readonly ILogger<TodosController> logger;
 
-        public TodosController(TodoService todoService)
+
+        public TodosController(TodoService todoService, ILogger<TodosController> logger)
         {
             _todoService = todoService;
+            this.logger = logger;
         }
 
         [HttpGet(Name = "GetTodos")]
         public ActionResult<List<Todo>> GetTodos() =>
             _todoService.Get();
 
-        [HttpPost]
+        [HttpPost] 
         public ActionResult<Todo> CreateTodo([FromBody] string todo)
         {
             if (!ModelState.IsValid || string.IsNullOrEmpty(todo))
@@ -44,22 +48,28 @@ namespace TodoAPI_1.Controllers
         [HttpGet("{todoId:length(0, 24)}", Name = "GetTodo")]
         public ActionResult<Todo> GetTodo(string todoId)
         {
+            logger.LogDebug("get by Id method executing...");
             try
             {
                 var todo = _todoService.Get(todoId);
                 if (todo == null)
                 {
+                    logger.LogWarning($"Todo with Id: {todoId} not found");
+                    logger.LogError("This is an error");
                     return NotFound("Unknown todo id");
                 }
+
+                logger.LogInformation($"Return todo with Id: {todoId}");
                 return todo;
             }
             catch
             {
+                logger.LogWarning($"Todo with Id: {todoId} not found");
                 return NotFound("Unknown todo id");
             }
         }
 
-        //[Route("{todoId}")] 1
+        //[Route("{todoId}")]
         [HttpPut("{todoId:length(0, 24)}")]
         public ActionResult<Todo> UpdateTodo(string todoId, [FromBody] string update)
         {
@@ -127,9 +137,9 @@ namespace TodoAPI_1.Controllers
 
         [HttpGet("SearchTodos")]
         public ActionResult<List<Todo>> SearchTodos(bool done, string title, int pageNumber, int pageSize)
-        { 
+        {
             try
-            { 
+            {
                 return _todoService.Searching(done, title, pageNumber, pageSize);
             }
             catch
@@ -139,8 +149,9 @@ namespace TodoAPI_1.Controllers
         }
 
         [HttpGet("SortTodos")]
-        public ActionResult<List<Todo>> SortTodos() =>
-            _todoService.Sorting();
+        public ActionResult<List<Todo>> SortTodos(bool isAscending) =>
+            _todoService.Sorting(isAscending);
+
 
 
     }
