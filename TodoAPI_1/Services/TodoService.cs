@@ -58,12 +58,12 @@ namespace TodoAPI_1.Services
             todo.Done = true;
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
-        public List<Todo> Searching(Params p)
+        public List<Todo> Searching(SortType sortType,Params p)
         {
             List<Todo> pages = new List<Todo>();
             if (p.SortByAscending == true)
             {
-                switch (p.SortType) 
+                switch (Convert.ToString(sortType)) 
                 {
                     case "Title":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
@@ -91,7 +91,7 @@ namespace TodoAPI_1.Services
             }
             else
             { 
-                switch (p.SortType)
+                switch (Convert.ToString(sortType))
                 {
                     case "Title":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))

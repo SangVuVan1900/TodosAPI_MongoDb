@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace TodoAPI_1.Models
-{
-    public enum SortType 
+{ 
+    //[DataContract]  
+    public enum SortType
     {
-        [Description("Title")]
+        [EnumMember(Value = "Title")]
         Title,
-        [Description("CreatedDate")]
+        [EnumMember(Value = "Created Date")]
         CreatedDate,
-        [Description("UpdatedDate")] 
+        [EnumMember(Value = "Updated Date")]
         UpdatedDate
-        //Title, CreatedDate, UpdatedDate
     }
 }
