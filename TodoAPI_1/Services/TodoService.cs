@@ -65,31 +65,31 @@ namespace TodoAPI_1.Services
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
 
-        public List<Todo> Searching(Params p)
+         public List<Todo> Searching(Params p)
         {
             if (string.IsNullOrEmpty(p.Title))
             {
-                p.Title = ""; 
+                p.Title = "";
             }
-            if (p.SortByAscending) 
+            if (p.SortByAscending)
             {
-                var pagesAscending = _todos.SortBy(t => t.Title)
+                var pagesAscending = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortBy(t => t.Title)
                     .SortBy(t => t.CreatedDate)
                     .SortBy(t => t.UpdatedDate)
                     .Skip(p.PageNumber * p.PageSize)
-                    .Limit(p.PageSize)
-                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title));
+                    .Limit(p.PageSize);
 
-                return pagesAscending.ToList(); 
+                return pagesAscending.ToList();
             }
             else
             {
-                var pagesDescending = _todos.SortByDescending(t => t.Title)
+                var pagesDescending = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortByDescending(t => t.Title)
                     .SortByDescending(t => t.CreatedDate)
                     .SortByDescending(t => t.UpdatedDate)
                     .Skip(p.PageNumber * p.PageSize)
-                    .Limit(p.PageSize)
-                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title));
+                    .Limit(p.PageSize);
 
                 return pagesDescending.ToList();
             }
