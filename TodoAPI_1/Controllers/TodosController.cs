@@ -114,7 +114,7 @@ namespace TodoAPI_1.Controllers
             }
         }
 
-        [HttpPatch]
+        [HttpPatch] 
         public IActionResult SetDone(string id)
         {
             try
@@ -132,12 +132,12 @@ namespace TodoAPI_1.Controllers
             {
                 return NotFound("Unknown todo id");
             }
-        } 
+        }
 
-        [HttpGet("SearchTodos")] 
-        public ActionResult<List<Todo>> SearchTodos(Params p)
+        [HttpGet("SearchTodos")]
+        public ActionResult<List<Todo>> SearchTodos([FromQuery] Params p)
         {
-            try   
+            try
             {
                 return _todoService.Searching(p);
             }

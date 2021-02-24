@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoAPI_1.Models;
+using static TodoAPI_1.Models.Params;
 
 namespace TodoAPI_1.Services
 {
     public class TodoService
     {
         private readonly IMongoCollection<Todo> _todos;
-
+        int PageSize = 3;
         public TodoService(ITodoApiDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
@@ -64,37 +65,68 @@ namespace TodoAPI_1.Services
             todo.Done = true;
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
-
+         
         public List<Todo> Searching(Params p)
         {
-            if (string.IsNullOrEmpty(p.Title))
+            List<Todo> pages = new List<Todo>();
+            if (p.SortByAscending == false) 
             {
-                p.Title = "";
-            } 
-            if (p.SortByAscending)
-            {
-                var pagesAscending = _todos
-                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
-                    .SortBy(t => t.Title)
-                    .SortBy(t => t.CreatedDate)
-                    .SortBy(t => t.UpdatedDate)
-                    .Skip(p.PageNumber * p.PageSize)
-                    .Limit(p.PageSize); 
+                switch (p.SortType)
+                {
+                    case "title":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortBy(t => t.Title)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList(); 
+                        break;
+                    case "createdDate":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortBy(t => t.CreatedDate)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList();
+                        break;
 
-                return pagesAscending.ToList();
-            }
+                    case "updatedDate":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortBy(t => t.UpdatedDate)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList();
+                        break;
+                }
+            } 
             else
             {
-                var pagesDescending = _todos
-                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
-                    .SortByDescending(t => t.Title)
-                    .SortByDescending(t => t.CreatedDate)
-                    .SortByDescending(t => t.UpdatedDate)
-                    .Skip(p.PageNumber * p.PageSize)
-                    .Limit(p.PageSize);
+                switch (p.SortType)
+                {
+                    case "title":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortByDescending(t => t.Title)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList();
+                        break;
+                    case "createdDate":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortByDescending(t => t.CreatedDate)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList();
+                        break;
+                         
+                    case "updatedDate":
+                        pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                           .SortByDescending(t => t.UpdatedDate)
+                           .Skip(p.PageNumber * PageSize)
+                           .Limit(PageSize)
+                           .ToList();
+                        break;
+                }
+            } 
 
-                return pagesDescending.ToList();
-            }
+            return pages;
         }
     }
 }
