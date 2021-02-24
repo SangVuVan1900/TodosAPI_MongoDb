@@ -132,14 +132,14 @@ namespace TodoAPI_1.Controllers
             {
                 return NotFound("Unknown todo id");
             }
-        }  
+        } 
 
         [HttpGet("SearchTodos")] 
-        public ActionResult<List<Todo>> SearchTodos(bool done, bool SortByAscending, string title, int page)
+        public ActionResult<List<Todo>> SearchTodos(Params p)
         {
-            try  
+            try   
             {
-                return _todoService.Searching(done, SortByAscending, title, page);
+                return _todoService.Searching(p);
             }
             catch
             {

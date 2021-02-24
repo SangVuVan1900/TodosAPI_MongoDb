@@ -65,54 +65,36 @@ namespace TodoAPI_1.Services
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
 
-        int pageSize = 3;
-        public List<Todo> Searching(bool done, bool isAscending, string title, int page)
+        public List<Todo> Searching(Params p)
         {
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(p.Title))
             {
-                title = "";
-            }
-            if (isAscending)
+                p.Title = "";
+            } 
+            if (p.SortByAscending)
             {
                 var pagesAscending = _todos
-               .Find(t => t.Done == done && t.Title.Contains(title))
-               .Skip(page * pageSize)
-               .Limit(pageSize)
-               .SortBy(t => t.Title)  
-               .ThenBy(t => t.CreatedDate)
-               .ThenBy(t => t.UpdatedDate);
-                 
+                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortBy(t => t.Title)
+                    .SortBy(t => t.CreatedDate)
+                    .SortBy(t => t.UpdatedDate)
+                    .Skip(p.PageNumber * p.PageSize)
+                    .Limit(p.PageSize); 
+
                 return pagesAscending.ToList();
             }
             else
             {
                 var pagesDescending = _todos
-               .Find(t => t.Done == done && t.Title.Contains(title))
-               .Skip(page * pageSize)
-               .Limit(pageSize)
-               .SortByDescending(t => t.Title)
-               .ThenByDescending(t => t.CreatedDate)
-               .ThenByDescending(t => t.UpdatedDate);
+                    .Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortByDescending(t => t.Title)
+                    .SortByDescending(t => t.CreatedDate)
+                    .SortByDescending(t => t.UpdatedDate)
+                    .Skip(p.PageNumber * p.PageSize)
+                    .Limit(p.PageSize);
 
                 return pagesDescending.ToList();
             }
-
         }
-
-        //public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize)
-        //{
-        //    List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
-
-        //    if (string.IsNullOrEmpty(title))
-        //    {
-        //        title = "";
-        //    }
-
-        //    TodoPagination todoPagination = new TodoPagination(PageNumber, PageSize);
-        //    return todos.FindAll(t => t.Done == done && t.Title.Contains(title))
-        //        .Skip((todoPagination.PageNumber - 1) * todoPagination.PageSize)
-        //        .Take(todoPagination.PageSize)
-        //        .ToList();
-        //}
     }
 }
