@@ -134,7 +134,11 @@ namespace TodoAPI_1.Controllers
             }
         }
 
+<<<<<<< HEAD
         [HttpGet("SearchTodos")]
+=======
+        [HttpGet("SearchTodos")] 
+>>>>>>> a8de92ef2ea522022db330434e5cc44719b43ef1
         public ActionResult<List<Todo>> SearchTodos([FromQuery] Params p)
         {
             try

@@ -65,6 +65,7 @@ namespace TodoAPI_1.Services
             todo.Done = true;
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
+<<<<<<< HEAD
          
         public List<Todo> Searching(Params p)
         {
@@ -87,6 +88,23 @@ namespace TodoAPI_1.Services
                            .Limit(PageSize)
                            .ToList();
                         break;
+=======
+
+         public List<Todo> Searching(Params p)
+        {
+            if (string.IsNullOrEmpty(p.Title))
+            {
+                p.Title = "";
+            }
+            if (p.SortByAscending)
+            {
+                var pagesAscending = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortBy(t => t.Title)
+                    .SortBy(t => t.CreatedDate)
+                    .SortBy(t => t.UpdatedDate)
+                    .Skip(p.PageNumber * p.PageSize)
+                    .Limit(p.PageSize);
+>>>>>>> a8de92ef2ea522022db330434e5cc44719b43ef1
 
                     case "updatedDate":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
@@ -99,6 +117,7 @@ namespace TodoAPI_1.Services
             } 
             else
             {
+<<<<<<< HEAD
                 switch (p.SortType)
                 {
                     case "title":
@@ -125,6 +144,14 @@ namespace TodoAPI_1.Services
                         break;
                 }
             } 
+=======
+                var pagesDescending = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
+                    .SortByDescending(t => t.Title)
+                    .SortByDescending(t => t.CreatedDate)
+                    .SortByDescending(t => t.UpdatedDate)
+                    .Skip(p.PageNumber * p.PageSize)
+                    .Limit(p.PageSize);
+>>>>>>> a8de92ef2ea522022db330434e5cc44719b43ef1
 
             return pages;
         }
