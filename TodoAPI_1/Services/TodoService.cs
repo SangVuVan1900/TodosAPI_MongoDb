@@ -14,7 +14,7 @@ namespace TodoAPI_1.Services
         public TodoService(ITodoApiDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName); 
+            var database = client.GetDatabase(settings.DatabaseName);
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
         }
 
@@ -65,42 +65,40 @@ namespace TodoAPI_1.Services
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
 
-        int pageSize = 2;
-        public List<Todo> Searching(bool done, string title, int page)
+        int pageSize = 3;
+        public List<Todo> Searching(bool done, bool isAscending, string title, int page)
         {
             if (string.IsNullOrEmpty(title))
             {
                 title = "";
             }
-            var pages = _todos
-                .Find(t => t.Done == done && t.Title.Contains(title))
-                .Skip(page * pageSize)
-                .Limit(pageSize);
-
-            return pages.ToList();
-        }
-
-        public List<Todo> Sorting(bool isAscending)
-        {
-            List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
-
             if (isAscending)
             {
-                var todosSorting = todos.OrderBy(t => t.Title)
-                .ThenBy(t => t.CreatedDate)
-                .ThenBy(t => t.UpdatedDate)
-                .ToList();
-                return todosSorting;
+                var pagesAscending = _todos
+               .Find(t => t.Done == done && t.Title.Contains(title))
+               .Skip(page * pageSize)
+               .Limit(pageSize)
+               .SortBy(t => t.Title)  
+               .ThenBy(t => t.CreatedDate)
+               .ThenBy(t => t.UpdatedDate);
+                 
+                return pagesAscending.ToList();
             }
             else
             {
-                var todosSorting = todos.OrderByDescending(t => t.Title)
-                .ThenByDescending(t => t.CreatedDate)
-                .ThenByDescending(t => t.UpdatedDate)
-                .ToList();
-                return todosSorting;
+                var pagesDescending = _todos
+               .Find(t => t.Done == done && t.Title.Contains(title))
+               .Skip(page * pageSize)
+               .Limit(pageSize)
+               .SortByDescending(t => t.Title)
+               .ThenByDescending(t => t.CreatedDate)
+               .ThenByDescending(t => t.UpdatedDate);
+
+                return pagesDescending.ToList();
             }
+
         }
+
         //public List<Todo> Searching(bool done, string title, int PageNumber, int PageSize)
         //{
         //    List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
