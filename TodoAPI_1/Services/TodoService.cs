@@ -14,16 +14,22 @@ namespace TodoAPI_1.Services
         public TodoService(ITodoApiDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
+            var database = client.GetDatabase(settings.DatabaseName); 
             _todos = database.GetCollection<Todo>(settings.TodosCollectionName);
         }
-         
+
         public List<Todo> Get() =>
             _todos.Find(t => t.Title.Contains("")).ToList();
 
-        public Todo Get(string id) =>
-            _todos.Find(todo => todo.Id == id).FirstOrDefault();
+        public Todo Get(string id)
+        {
+            var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
+            if (todo == null)
+            {
+                return null;
+            }
+            return todo;
+        }
 
         public Todo Create(Todo todo)
         {
@@ -34,6 +40,10 @@ namespace TodoAPI_1.Services
         public void Update(string id, string title)
         {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
+            if (todo == null)
+            {
+                return;
+            }
             Todo todoIn = new Todo(id, title, todo.Done, todo.CreatedDate, DateTime.Now.AddHours(7));
             _todos.ReplaceOne(todo => todo.Id == id, todoIn);
         }
@@ -47,6 +57,10 @@ namespace TodoAPI_1.Services
         public void SetDone(string id)
         {
             var todo = _todos.Find(todo => todo.Id == id).FirstOrDefault();
+            if (todo == null)
+            {
+                return;
+            }
             todo.Done = true;
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
@@ -54,16 +68,14 @@ namespace TodoAPI_1.Services
         int pageSize = 2;
         public List<Todo> Searching(bool done, string title, int page)
         {
-            List<Todo> todos = _todos.Find(t => t.Title.Contains("")).ToList();
-            if (string.IsNullOrEmpty(title)) 
-            { 
-                title = ""; 
-            } 
-
-            var pages = todos
-                .FindAll(t => t.Done == done && t.Title.Contains(title))
+            if (string.IsNullOrEmpty(title))
+            {
+                title = "";
+            }
+            var pages = _todos
+                .Find(t => t.Done == done && t.Title.Contains(title))
                 .Skip(page * pageSize)
-                .Take(pageSize);
+                .Limit(pageSize);
 
             return pages.ToList();
         }
