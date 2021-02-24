@@ -58,21 +58,21 @@ namespace TodoAPI_1.Services
             todo.Done = true;
             _todos.ReplaceOne(todo => todo.Id == id, todo);
         }
-        public List<Todo> Searching(SortType sortType,Params p)
+        public List<Todo> Searching(Params p)
         {
             List<Todo> pages = new List<Todo>();
             if (p.SortByAscending == true)
             {
-                switch (Convert.ToString(sortType)) 
+                switch (p.SortType) 
                 {
-                    case "Title":
+                    case "title":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortBy(t => t.Title)
                            .Skip(p.PageNumber * PageSize)
                            .Limit(PageSize)
                            .ToList();
                         break;
-                    case "CreatedDate":
+                    case "createdDate":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortBy(t => t.CreatedDate)
                            .Skip(p.PageNumber * PageSize)
@@ -80,7 +80,7 @@ namespace TodoAPI_1.Services
                            .ToList();
                         break;
 
-                    case "UpdatedDate":
+                    case "updatedDate":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortBy(t => t.UpdatedDate)
                            .Skip(p.PageNumber * PageSize)
@@ -91,16 +91,16 @@ namespace TodoAPI_1.Services
             }
             else
             { 
-                switch (Convert.ToString(sortType))
+                switch (p.SortType)
                 {
-                    case "Title":
+                    case "title":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortByDescending(t => t.Title)
                            .Skip(p.PageNumber * PageSize)
                            .Limit(PageSize)
                            .ToList();
                         break;
-                    case "CreatedDate":
+                    case "createdDate":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortByDescending(t => t.CreatedDate)
                            .Skip(p.PageNumber * PageSize)
@@ -108,7 +108,7 @@ namespace TodoAPI_1.Services
                            .ToList();
                         break;
 
-                    case "UpdatedDate":
+                    case "updatedDate":
                         pages = _todos.Find(t => t.Done == p.Done && t.Title.Contains(p.Title))
                            .SortByDescending(t => t.UpdatedDate)
                            .Skip(p.PageNumber * PageSize)

@@ -135,12 +135,12 @@ namespace TodoAPI_1.Controllers
         }
 
         [HttpGet("SearchTodos")]
-        public ActionResult<List<Todo>> SearchTodos(SortType sortType, [FromQuery] Params p)
-        {
-            try
+        public ActionResult<List<Todo>> SearchTodos([FromQuery] Params p)
+        { 
+            try 
             {
-                return _todoService.Searching(sortType, p);
-            } 
+                return _todoService.Searching(p); 
+            }
             catch
             {
                 return BadRequest("Invalid data");
