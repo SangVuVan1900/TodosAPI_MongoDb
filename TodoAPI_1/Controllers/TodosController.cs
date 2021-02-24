@@ -135,7 +135,7 @@ namespace TodoAPI_1.Controllers
         } 
 
         [HttpGet("SearchTodos")] 
-        public ActionResult<List<Todo>> SearchTodos(Params p)
+        public ActionResult<List<Todo>> SearchTodos([FromQuery] Params p)
         {
             try   
             {
