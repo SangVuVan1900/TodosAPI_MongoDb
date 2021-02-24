@@ -33,10 +33,10 @@ namespace TodoAPI_1
                  Configuration.GetSection(nameof(TodoApiDatabaseSettings)));
             services.AddSingleton<ITodoApiDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<TodoApiDatabaseSettings>>().Value);
-             
-            services.AddSingleton<TodoService>();  
-            services.AddControllers(); 
-            services.AddSwaggerGen(c => 
+
+            services.AddSingleton<TodoService>();
+            services.AddControllers();
+            services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {

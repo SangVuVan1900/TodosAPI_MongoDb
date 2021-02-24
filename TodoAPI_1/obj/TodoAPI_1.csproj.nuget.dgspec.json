@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\1D\\Desktop\\Mission\\TodoAPI_1\\TodoAPI_1.csproj": {}
+    "C:\\Users\\1D\\Desktop\\Mission\\Main\\TodoAPI_1\\TodoAPI_1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\1D\\Desktop\\Mission\\TodoAPI_1\\TodoAPI_1.csproj": {
+    "C:\\Users\\1D\\Desktop\\Mission\\Main\\TodoAPI_1\\TodoAPI_1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\1D\\Desktop\\Mission\\TodoAPI_1\\TodoAPI_1.csproj",
+        "projectUniqueName": "C:\\Users\\1D\\Desktop\\Mission\\Main\\TodoAPI_1\\TodoAPI_1.csproj",
         "projectName": "TodoAPI_1",
-        "projectPath": "C:\\Users\\1D\\Desktop\\Mission\\TodoAPI_1\\TodoAPI_1.csproj",
+        "projectPath": "C:\\Users\\1D\\Desktop\\Mission\\Main\\TodoAPI_1\\TodoAPI_1.csproj",
         "packagesPath": "C:\\Users\\1D\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\1D\\Desktop\\Mission\\TodoAPI_1\\obj\\",
+        "outputPath": "C:\\Users\\1D\\Desktop\\Mission\\Main\\TodoAPI_1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\1D\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -51,10 +51,6 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
-            },
-            "Swashbuckle.AspNetCore.Annotations": {
-              "target": "Package",
-              "version": "[6.0.7, )"
             }
           },
           "imports": [
